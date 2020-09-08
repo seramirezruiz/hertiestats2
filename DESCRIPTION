@@ -1,0 +1,17 @@
+Package: hertiestats2
+Type: Package
+Title: Stats II - Tutorials
+Version: 0.1.0
+Author: Sebastian Ramirez Ruiz
+Maintainer: Sebastian Ramirez Ruiz <ramirez-ruiz@hertie-school.org>
+Description: This package contains the tutorials for the Statistics II: Statistical Modeling and Causal Inference course.
+License: MIT License
+Encoding: UTF-8
+LazyData: true
+Imports: 
+    dplyr,
+    learnr,
+    rmarkdown,
+    tidyr,
+    magrittr,
+    palmerpenguins
