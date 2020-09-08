@@ -121,12 +121,12 @@ Say we are only interested in the species, island, and year variables of these d
 **Activity**
 *The following code chunk would select the variables we need. Can you adapt it, so that we keep the body_mass_g and sex variables as well?*
 ```{r select-extra, exercise=TRUE, exercise.eval=TRUE, exercise.lines = 1}
-select(penguins, species, island, year)
+dplyr::select(penguins, species, island, year)
 ```
 
 ```{r select-extra-hint}
 # you just need to type the names of the columns
-select(penguins, species, island, year, body_mass_g, sex)
+dplyr::select(penguins, species, island, year, body_mass_g, sex)
 ```
 
 *To drop variables, use - before the variable name [i.e. select(penguins, -year)] to drop the year column*
@@ -146,12 +146,12 @@ The more commonly used logical operators are:
 Say we are interested in retrieving the observations from the year 2007. We would do:
 
 ```{r filter-extra, exercise=TRUE, exercise.eval=TRUE, exercise.lines = 1}
-filter(penguins, year == 2007)
+dplyr::filter(penguins, year == 2007)
 ```
 
 ```{r filter-extra-hint}
 # you just need to utilize & and type the logical operator for the species
-filter(penguins, year == 2007 & species == "Chinstrap")
+dplyr::filter(penguins, year == 2007 & species == "Chinstrap")
 ```
 
 **Activity**
@@ -171,9 +171,9 @@ The pipe, `%>%`, comes from the `magrittr` package by Stefan Milton Bache. Packa
 *We can leverage the pipe operator to sequence our code in a logical manner. Can you adapt the following code chunck with the pipe and conditional logical operators we discussed?*
 
 ```
-only_2009 <- filter(penguins, year == 2009)
-only_2009_chinstraps <- filter(only_2009, species == "Chinstrap")
-only_2009_chinstraps_species_sex_year <- select(only_2009_chinstraps, species, sex, year)
+only_2009 <- dplyr::filter(penguins, year == 2009)
+only_2009_chinstraps <- dplyr::filter(only_2009, species == "Chinstrap")
+only_2009_chinstraps_species_sex_year <- dplyr::select(only_2009_chinstraps, species, sex, year)
 final_df <- only_2009_chinstraps_species_sex_year
 final_df #to print it in our console
 ```
@@ -184,8 +184,8 @@ penguins
 
 ```{r pipe-extra-hint}
 penguins %>%
-  filter(year == 2009 & species == "Chinstrap") %>%
-  select(species, sex, year)
+  dplyr::filter(year == 2009 & species == "Chinstrap") %>%
+  dplyr::select(species, sex, year)
 ```
 
 ## `mutate()`
@@ -198,12 +198,12 @@ penguins %>%
 
 ```{r mutate-extra, exercise=TRUE, exercise.lines = 3}
 penguins %>%
-  mutate(body_mass_lbs = body_mass_g/453.6)
+  dplyr::mutate(body_mass_lbs = body_mass_g/453.6)
 ```
 
 ```{r mutate-extra-hint}
 penguins %>%
-  mutate(body_mass_kg = body_mass_g/1000)
+  dplyr::mutate(body_mass_kg = body_mass_g/1000)
 ```
 
 **Activity**
@@ -216,13 +216,13 @@ These two verbs `group_by()` and `summarize()` tend to go together. When combine
 ```{r summarize-extra, exercise=TRUE, exercise.eval=TRUE, exercise.lines = 3}
 # compare this output with the one under the hint tab
 penguins %>%
-  summarize(heaviest_penguin = max(body_mass_g, na.rm = T)) #max() does not know how to deal with NAs very well
+  dplyr::summarize(heaviest_penguin = max(body_mass_g, na.rm = T)) #max() does not know how to deal with NAs very well
 ```
 
 ```{r summarize-extra-hint}
 penguins %>%
-  group_by(species) %>%
-  summarize(heaviest_penguin = max(body_mass_g, na.rm = T))
+  dplyr::group_by(species) %>%
+  dplyr::summarize(heaviest_penguin = max(body_mass_g, na.rm = T))
 ```
 
 **Activity**
@@ -238,12 +238,12 @@ The `arrange()` verb is pretty self-explanatory. `arrange()` orders the rows of 
 <br>
 ```{r arrange-extra, exercise=TRUE, exercise.eval=TRUE, exercise.lines = 3}
 penguins %>%
-  arrange(bill_length_mm)
+  dplyr::arrange(bill_length_mm)
 ```
 
 ```{r arrange-extra-hint}
 penguins %>%
-  arrange(desc(bill_length_mm))
+  dplyr::arrange(desc(bill_length_mm))
 ```
 
 **Activity**
