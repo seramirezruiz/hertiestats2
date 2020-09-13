@@ -15,8 +15,9 @@ install.packages("devtools")
 devtools::install_github("seramirezruiz/hertiestats2")
 ```
 
-You can then run the tutorial with
+You can then run the tutorial of the session we are covering by running the respective line of code:
 
 ``` r
-learnr::run_tutorial("intro", package = "hertiestats2")
+learnr::run_tutorial("intro", package = "hertiestats2") #first session
+learnr::run_tutorial("foundations", package = "hertiestats2") #second session
 ```
