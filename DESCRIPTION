@@ -17,4 +17,5 @@ Imports:
     palmerpenguins,
     checkmate,
     readr,
-    haven
+    haven,
+    knitr
