@@ -15,7 +15,7 @@ description: >
 library(learnr)
 library(dplyr)
 library(readr)
-prejudice_df <- readr::read_csv("../../../data/prejudice.csv")
+prejudice_df <- readr::read_csv("data/prejudice.csv")
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
@@ -38,7 +38,7 @@ In this tutorial, you will learn to:
 *RStudio* is an integrated development environment (IDE) for R. Think of *RStudio* as a front that allows us to interact, compile, and render R code in a more instinctive way. The following image shows what the standard RStudio interface looks like:
 
 ```{r, echo=FALSE, out.width="70%", fig.align = "center"}
-knitr::include_graphics("../../../images/rstudio_layout.png")  
+knitr::include_graphics("images/rstudio_layout.png")  
 ```
 
 
@@ -92,7 +92,7 @@ getwd()
 You can set you directory manually from RStudio: use the menu to change your working directory under Session > Set Working Directory > Choose Directory.
 
 ```{r, echo=FALSE, out.width="55%", fig.align = "center"}
-knitr::include_graphics("../../../images/working-directory.png")  
+knitr::include_graphics("images/working-directory.png")  
 ```
 
 You can also use the `setwd()` function:
@@ -107,7 +107,7 @@ setwd("c:/path/to/your/directory") #in windows
 ### Recommended folder structure for the class
 
 ```{r, echo=FALSE, out.width="100%", fig.align = "center"}
-knitr::include_graphics("../../../images/folder-structure.png")  
+knitr::include_graphics("images/folder-structure.png")  
 ```
 
 We recommend you pay close attention to your folder structure. You can create an independent folder for each assignment. Make the folder your working directory when working on the assignment. This folder will be populated with the template .Rmd and the data for the week. When you knit the file, the **.html** will be created in this folder.
@@ -230,7 +230,7 @@ We assume from the *potential outcomes framework* that each subject has a **pote
 
 
 ```{r, echo=FALSE, out.width="65%", fig.align = "center"}
-knitr::include_graphics("../../../images/pof_ite.png")  
+knitr::include_graphics("images/pof_ite.png")  
 ```
 
 The figure illustrates the **potential outcomes** for *Student 1*. We see that in a reality where *Student 1* is assigned to in-group dorm **(contact=0)** their levels of prejudice are *6*. On the contrary, in a reality where *Student 1* is assigned to co-ethnic dorm **(contact=1)** their levels of prejudice are *5*.
@@ -313,7 +313,7 @@ prejudice_df
 So far, we have worked with perfect information. Still, we know that in reality we can only observe subjects in one treatment state. This is the information we **do** have.
 
 ```{r, echo=FALSE, out.width="65%", fig.align = "center"}
-knitr::include_graphics("../../../images/observed-data.png")  
+knitr::include_graphics("images/observed-data.png")  
 ```
 
 The **Näive Average Treatment Effect (NATE)** is the calculation we can compute based on the observed outcomes.
@@ -349,7 +349,7 @@ ifelse(condition_to_meet, what_to_do_if_met, what_to_do_if_not_met)
 During the lecture, we met two sources of bias:
 
 ```{r, echo=FALSE, out.width="65%", fig.align = "center"}
-knitr::include_graphics("../../../images/bias.png")  
+knitr::include_graphics("images/bias.png")  
 ```
 
 ### Selection bias
