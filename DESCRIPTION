@@ -15,4 +15,6 @@ Imports:
     tidyr,
     magrittr,
     palmerpenguins,
-    checkmate
+    checkmate,
+    readr,
+    haven
