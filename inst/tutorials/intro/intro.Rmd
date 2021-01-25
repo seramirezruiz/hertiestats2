@@ -58,8 +58,9 @@ Generally, we will encounter data in a tidy format. Tidy data refers to a way of
 2. Each observation forms a row.
 3. Each type of observational unit forms a table
 
-<center>
-<img src="https://jmbuhr.de/books/dataIntro19/img/tidy-1.png" width="500" height="250" /></center>
+```{r, fig.align='center', echo=F, out.width = "70%"}
+knitr::include_graphics("images/tidy_data.png")
+```
 
 ### The `penguins` data set
 
@@ -74,8 +75,10 @@ The 3 species of penguins in this data set are Adelie, Chinstrap and Gentoo. The
 - **sex:** a factor denoting penguin sex (MALE, FEMALE)
 - **year** an integer denoting the year of the record
 
-<center>
-<img src="https://miro.medium.com/max/624/1*xJ6_zgmEEfI2BT0sRXP5cw.png" width="500" height="250" /></center>
+
+```{r, fig.align='center', echo=F, out.width = "70%"}
+knitr::include_graphics("images/penguins.png")
+```
 <p style="text-align:right;">*Illustration by \@allisonhorst*</p>
 
 ### Let's explore the data set.
