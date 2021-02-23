@@ -1,0 +1,16 @@
+section-introduction
+section-welcome
+section-what-we-will-need-today
+section-data-structure
+section-tidy-data
+section-the-penguins-data-set
+section-lets-explore-the-data-set.
+section-manipulating-with-dplyr
+section-what-we-will-learn-today
+section-select
+section-filter
+section-the-pipe-operator
+section-mutate
+section-group_by-and-summarize
+section-arrange
+section-quiz

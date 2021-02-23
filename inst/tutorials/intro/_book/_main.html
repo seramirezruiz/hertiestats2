@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Introduction to Data Manipulation</title>
+  <meta name="description" content="Learn how to utilize the syntax of the dplyr package to manipulate your data." />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Introduction to Data Manipulation" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Learn how to utilize the syntax of the dplyr package to manipulate your data." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Introduction to Data Manipulation" />
+  
+  <meta name="twitter:description" content="Learn how to utilize the syntax of the dplyr package to manipulate your data." />
+  
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+
+
+
+
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="0.1" data-path=""><a href="#section-introduction"><i class="fa fa-check"></i><b>0.1</b> Introduction</a><ul>
+<li class="chapter" data-level="0.1.1" data-path=""><a href="#section-welcome"><i class="fa fa-check"></i><b>0.1.1</b> Welcome!</a></li>
+<li class="chapter" data-level="0.1.2" data-path=""><a href="#section-what-we-will-need-today"><i class="fa fa-check"></i><b>0.1.2</b> What we will need today</a></li>
+</ul></li>
+<li class="chapter" data-level="0.2" data-path=""><a href="#section-data-structure"><i class="fa fa-check"></i><b>0.2</b> Data Structure</a><ul>
+<li class="chapter" data-level="0.2.1" data-path=""><a href="#section-tidy-data"><i class="fa fa-check"></i><b>0.2.1</b> Tidy data</a></li>
+<li class="chapter" data-level="0.2.2" data-path=""><a href="#section-the-penguins-data-set"><i class="fa fa-check"></i><b>0.2.2</b> The <code>penguins</code> data set</a></li>
+<li class="chapter" data-level="0.2.3" data-path=""><a href="#section-lets-explore-the-data-set."><i class="fa fa-check"></i><b>0.2.3</b> Let's explore the data set.</a></li>
+</ul></li>
+<li class="chapter" data-level="0.3" data-path=""><a href="#section-manipulating-with-dplyr"><i class="fa fa-check"></i><b>0.3</b> Manipulating with <code>dplyr</code></a><ul>
+<li class="chapter" data-level="0.3.1" data-path=""><a href="#section-what-we-will-learn-today"><i class="fa fa-check"></i><b>0.3.1</b> What we will learn today</a></li>
+</ul></li>
+<li class="chapter" data-level="0.4" data-path=""><a href="#section-select"><i class="fa fa-check"></i><b>0.4</b> <code>select()</code></a></li>
+<li class="chapter" data-level="0.5" data-path=""><a href="#section-filter"><i class="fa fa-check"></i><b>0.5</b> <code>filter()</code></a></li>
+<li class="chapter" data-level="0.6" data-path=""><a href="#section-the-pipe-operator"><i class="fa fa-check"></i><b>0.6</b> The Pipe Operator: <code>%&gt;%</code></a></li>
+<li class="chapter" data-level="0.7" data-path=""><a href="#section-mutate"><i class="fa fa-check"></i><b>0.7</b> <code>mutate()</code></a></li>
+<li class="chapter" data-level="0.8" data-path=""><a href="#section-group_by-and-summarize"><i class="fa fa-check"></i><b>0.8</b> <code>group_by()</code> and <code>summarize()</code></a></li>
+<li class="chapter" data-level="0.9" data-path=""><a href="#section-arrange"><i class="fa fa-check"></i><b>0.9</b> <code>arrange()</code></a></li>
+<li class="chapter" data-level="0.10" data-path=""><a href="#section-quiz"><i class="fa fa-check"></i><b>0.10</b> Quiz</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Introduction to Data Manipulation</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="section-header">
+<h1 class="title">Introduction to Data Manipulation</h1>
+<h2 class="subtitle"><em>Getting our data right with <code>dplyr</code></em></h2>
+</div>
+<div id="section-introduction" class="section level2">
+<h2><span class="header-section-number">0.1</span> Introduction</h2>
+<div id="section-welcome" class="section level3">
+<h3><span class="header-section-number">0.1.1</span> Welcome!</h3>
+<p>Welcome to our first tutorial for the Statistics II: Statistical Modeling &amp; Causal Inference (with R) course. The labs are designed to reinforce the material covered during the lectures by introducing you to hands-on applications. The practical nature of our class means that our labs will be data-centered. Throughout our class, we will get acquinted with multiple packages of the <code>tidyverse</code>. Though we expect that some of you may already know them, the <code>tidyverse</code> is a collection of R packages that share an underlying design, syntax, and structure. They will definitely make your life easier!!</p>
+<p>Today, we will start with a brief introduction to data manipulation through the <code>dplyr</code> package.</p>
+<p>In this tutorial, you will learn to:</p>
+<ul>
+<li>identify the purpose of a set of <code>dplyr</code> verbs</li>
+<li>write statements in <strong>tidy</strong> syntax</li>
+<li>apply <code>dplyr</code> verbs to solve your data manipulation challenges</li>
+</ul>
+<p>This tutorial is partly based on <a href="http://r4ds.had.co.nz/"><em>R for Data Science</em></a>, section 5.2, and <a href="http://qpolr.com/data.html/"><em>Quantitative Politics with R</em></a>, chapter 3.</p>
+</div>
+<div id="section-what-we-will-need-today" class="section level3">
+<h3><span class="header-section-number">0.1.2</span> What we will need today</h3>
+<p>We'll practice some wrangling in <code>dplyr</code> using data for penguin sizes recorded by Dr. Kristen Gorman and others at several islands in the Palmer Archipelago, Antarctica. Data are originally published in: Gorman KB, Williams TD, Fraser WR (2014) PLoS ONE 9(3): e90081. <a href="doi:10.1371/journal.pone.0090081" class="uri">doi:10.1371/journal.pone.0090081</a></p>
+<p>You do <strong>not</strong> need to import the data to work through this tutorial - the data are already here waiting behind the scenes.</p>
+<p>But if you <em>do</em> ever want to use the penguins data outside of this tutorial, they now exist in the <a href="https://github.com/allisonhorst/palmerpenguins"><strong>palmerpenguins</strong></a> package in <em>R</em>.</p>
+<p>If you are ready to begin, click on!</p>
+</div>
+</div>
+<div id="section-data-structure" class="section level2">
+<h2><span class="header-section-number">0.2</span> Data Structure</h2>
+<div id="section-tidy-data" class="section level3">
+<h3><span class="header-section-number">0.2.1</span> Tidy data</h3>
+<p>Generally, we will encounter data in a tidy format. Tidy data refers to a way of mapping the structure of a data set. In a tidy data set:</p>
+<ol style="list-style-type: decimal">
+<li>Each variable forms a column.</li>
+<li>Each observation forms a row.</li>
+<li>Each type of observational unit forms a table</li>
+</ol>
+<p><img src="images/tidy_data.png" width="70%" style="display: block; margin: auto;" /></p>
+</div>
+<div id="section-the-penguins-data-set" class="section level3">
+<h3><span class="header-section-number">0.2.2</span> The <code>penguins</code> data set</h3>
+<p>The 3 species of penguins in this data set are Adelie, Chinstrap and Gentoo. The data set contains 8 variables:</p>
+<ul>
+<li><strong>species:</strong> a factor denoting the penguin species (Adelie, Chinstrap, or Gentoo)</li>
+<li><strong>island:</strong> a factor denoting the island (in Palmer Archipelago, Antarctica) where observed</li>
+<li><strong>culmen_length_mm:</strong> a number denoting length of the dorsal ridge of penguin bill (millimeters)</li>
+<li><strong>culmen_depth_mm:</strong> a number denoting the depth of the penguin bill (millimeters)</li>
+<li><strong>flipper_length_mm:</strong> an integer denoting penguin flipper length (millimeters)</li>
+<li><strong>body_mass_g:</strong> an integer denoting penguin body mass (grams)</li>
+<li><strong>sex:</strong> a factor denoting penguin sex (MALE, FEMALE)</li>
+<li><strong>year</strong> an integer denoting the year of the record</li>
+</ul>
+<img src="images/penguins.png" width="70%" style="display: block; margin: auto;" />
+<p style="text-align:right;">
+<em>Illustration by @allisonhorst</em>
+</p>
+</div>
+<div id="section-lets-explore-the-data-set." class="section level3">
+<h3><span class="header-section-number">0.2.3</span> Let's explore the data set.</h3>
+<p><code>head()</code> is a function that returns the first couple rows from a data frame. Write the R code required to explore the first observations of the <code>penguins</code> data set:</p>
+<p>Notice that when you press 'Run', the <strong>output</strong> of the code is returned below it! So by pressing 'Run', you've run your first <em>R</em> code of the class!</p>
+<div class="tutorial-exercise" data-label="head" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="1">
+<pre class="text"><code>head(penguins)</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":7,"fig.height":5,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":672,"warning":true,"error":false,"message":true,"exercise.df_print":"default","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
+</div>
+</div>
+</div>
+<div id="section-manipulating-with-dplyr" class="section level2">
+<h2><span class="header-section-number">0.3</span> Manipulating with <code>dplyr</code></h2>
+<div id="section-what-we-will-learn-today" class="section level3">
+<h3><span class="header-section-number">0.3.1</span> What we will learn today</h3>
+<p>In this tutorial, you'll learn and practice examples using some functions in <code>dplyr</code> to work with data. Those are:</p>
+<ul>
+<li><code>select()</code>: keep or exclude some columns</li>
+<li><code>filter()</code>: keep rows that satisfy your conditions</li>
+<li><code>mutate()</code>: add columns from existing data or edit existing columns</li>
+<li><code>group_by()</code>: lets you define groups within your data set</li>
+<li><code>summarize()</code>: get summary statistics</li>
+<li><code>arrange()</code>: reorders the rows according to single or multiple variables</li>
+</ul>
+<p>Let's get to work.</p>
+</div>
+</div>
+<div id="section-select" class="section level2">
+<h2><span class="header-section-number">0.4</span> <code>select()</code></h2>
+<p>The first verb (function) we will utilize is <code>select()</code>. We can employ it to manipulate our data based on columns. If you recall from our initial exploration of the data set there were eight variables attached to every observation. Do you recall them? If you do not, there is no problem. You can utilize <code>names()</code> to retrieve the names of the variables in a data frame.</p>
+<div class="tutorial-exercise" data-label="names" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="1">
+<pre class="text"><code>names(penguins)</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":7,"fig.height":5,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":672,"warning":true,"error":false,"message":true,"exercise.df_print":"default","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
+</div>
+Say we are only interested in the species, island, and year variables of these data, we can utilize the following syntax:
+<p>
+<center>
+<code>select(data, columns)</code>
+</center>
+<p><br></p>
+<strong>Activity</strong> <em>The following code chunk would select the variables we need. Can you adapt it, so that we keep the body_mass_g and sex variables as well?</em>
+<div class="tutorial-exercise" data-label="select-extra" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="1">
+<pre class="text"><code>dplyr::select(penguins, species, island, year)</code></pre>
+<pre><code># A tibble: 344 x 3
+   species island     year
+   &lt;fct&gt;   &lt;fct&gt;     &lt;int&gt;
+ 1 Adelie  Torgersen  2007
+ 2 Adelie  Torgersen  2007
+ 3 Adelie  Torgersen  2007
+ 4 Adelie  Torgersen  2007
+ 5 Adelie  Torgersen  2007
+ 6 Adelie  Torgersen  2007
+ 7 Adelie  Torgersen  2007
+ 8 Adelie  Torgersen  2007
+ 9 Adelie  Torgersen  2007
+10 Adelie  Torgersen  2007
+# … with 334 more rows</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":7,"fig.height":5,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":672,"warning":true,"error":false,"message":true,"exercise.df_print":"default","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="select-extra-hint" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># you just need to type the names of the columns
+dplyr::select(penguins, species, island, year, body_mass_g, sex)</code></pre>
+</div>
+<p><em>To drop variables, use - before the variable name [i.e. select(penguins, -year)] to drop the year column</em></p>
+</div>
+<div id="section-filter" class="section level2">
+<h2><span class="header-section-number">0.5</span> <code>filter()</code></h2>
+<p>The second verb (function) we will employ is <code>filter()</code>. <code>filter()</code> lets you use a logical test to extract specific rows from a data frame. To use <code>filter()</code>, pass it the data frame followed by one or more logical tests. <code>filter()</code> will return every row that passes each logical test.</p>
+<p>The more commonly used logical operators are:</p>
+<ul>
+<li><code>==</code>: Equal to</li>
+<li><code>!=</code>: Not equal to</li>
+<li><code>&gt;</code>, <code>&gt;=</code>: Greater than, greater than or equal to</li>
+<li><code>&lt;</code>, <code>&lt;=</code>: Less than, less than or equal to</li>
+<li><code>&amp;</code>, <code>|</code>: And, or</li>
+</ul>
+<p>Say we are interested in retrieving the observations from the year 2007. We would do:</p>
+<div class="tutorial-exercise" data-label="filter-extra" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="1">
+<pre class="text"><code>dplyr::filter(penguins, year == 2007)</code></pre>
+<pre><code># A tibble: 110 x 8
+   species island bill_length_mm bill_depth_mm flipper_length_… body_mass_g sex  
+   &lt;fct&gt;   &lt;fct&gt;           &lt;dbl&gt;         &lt;dbl&gt;            &lt;int&gt;       &lt;int&gt; &lt;fct&gt;
+ 1 Adelie  Torge…           39.1          18.7              181        3750 male 
+ 2 Adelie  Torge…           39.5          17.4              186        3800 fema…
+ 3 Adelie  Torge…           40.3          18                195        3250 fema…
+ 4 Adelie  Torge…           NA            NA                 NA          NA &lt;NA&gt; 
+ 5 Adelie  Torge…           36.7          19.3              193        3450 fema…
+ 6 Adelie  Torge…           39.3          20.6              190        3650 male 
+ 7 Adelie  Torge…           38.9          17.8              181        3625 fema…
+ 8 Adelie  Torge…           39.2          19.6              195        4675 male 
+ 9 Adelie  Torge…           34.1          18.1              193        3475 &lt;NA&gt; 
+10 Adelie  Torge…           42            20.2              190        4250 &lt;NA&gt; 
+# … with 100 more rows, and 1 more variable: year &lt;int&gt;</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":7,"fig.height":5,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":672,"warning":true,"error":false,"message":true,"exercise.df_print":"default","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="filter-extra-hint" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># you just need to utilize &amp; and type the logical operator for the species
+dplyr::filter(penguins, year == 2007 &amp; species == &quot;Chinstrap&quot;)</code></pre>
+</div>
+<p><strong>Activity</strong> <em>Can you adapt the code to retrieve all the observations of Chinstrap penguins from 2007 (remember that species contains character units)</em></p>
+</div>
+<div id="section-the-pipe-operator" class="section level2">
+<h2><span class="header-section-number">0.6</span> The Pipe Operator: <code>%&gt;%</code></h2>
+<p>The pipe, <code>%&gt;%</code>, comes from the <code>magrittr</code> package by Stefan Milton Bache. Packages in the tidyverse load <code>%&gt;%</code> for you automatically, so you don’t usually load magrittr explicitly. This will be one of your best friends in <em>R</em>.</p>
+<p><strong>Pipes are a powerful tool for clearly expressing a sequence of multiple operations. Let's think about baking for a second.</strong></p>
+<center>
+<img src="https://user-images.githubusercontent.com/54796579/92409417-d3b0c600-f140-11ea-8596-561a05586988.png" width="750" height="500" />
+</center>
+<p><strong>Activity</strong> <em>We can leverage the pipe operator to sequence our code in a logical manner. Can you adapt the following code chunck with the pipe and conditional logical operators we discussed?</em></p>
+<pre><code>only_2009 &lt;- dplyr::filter(penguins, year == 2009)
+only_2009_chinstraps &lt;- dplyr::filter(only_2009, species == &quot;Chinstrap&quot;)
+only_2009_chinstraps_species_sex_year &lt;- dplyr::select(only_2009_chinstraps, species, sex, year)
+final_df &lt;- only_2009_chinstraps_species_sex_year
+final_df #to print it in our console</code></pre>
+<div class="tutorial-exercise" data-label="pipe-extra" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="5">
+<pre class="text"><code>penguins</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":7,"fig.height":5,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":672,"warning":true,"error":false,"message":true,"exercise.df_print":"default","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="pipe-extra-hint" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>penguins %&gt;%
+  dplyr::filter(year == 2009 &amp; species == &quot;Chinstrap&quot;) %&gt;%
+  dplyr::select(species, sex, year)</code></pre>
+</div>
+</div>
+<div id="section-mutate" class="section level2">
+<h2><span class="header-section-number">0.7</span> <code>mutate()</code></h2>
+<p><code>mutate()</code> lets us create, modify, and delete columns. The most common use for now will be to create new variables based on existing ones. Say we are working with a U.S. American client and they feel more confortable with assessing the weight of the penguins in pounds. We would utilize <code>mutate()</code> as such:</p>
+<p>
+<center>
+<code>mutate(new_var_name = conditions)</code>
+</center>
+<p><br></p>
+<div class="tutorial-exercise" data-label="mutate-extra" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="3">
+<pre class="text"><code>penguins %&gt;%
+  dplyr::mutate(body_mass_lbs = body_mass_g/453.6)</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":7,"fig.height":5,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":672,"warning":true,"error":false,"message":true,"exercise.df_print":"default","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="mutate-extra-hint" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>penguins %&gt;%
+  dplyr::mutate(body_mass_kg = body_mass_g/1000)</code></pre>
+</div>
+<p><strong>Activity</strong> <em>Can you edit the previous code chunk to render a new variable body_mass_kg?</em></p>
+</div>
+<div id="section-group_by-and-summarize" class="section level2">
+<h2><span class="header-section-number">0.8</span> <code>group_by()</code> and <code>summarize()</code></h2>
+<p>These two verbs <code>group_by()</code> and <code>summarize()</code> tend to go together. When combined , 'summarize()` will create a new data frame. It will have one (or more) rows for each combination of grouping variables; if there are no grouping variables, the output will have a single row summarising all observations in the input. For example:</p>
+<div class="tutorial-exercise" data-label="summarize-extra" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="3">
+<pre class="text"><code># compare this output with the one under the hint tab
+penguins %&gt;%
+  dplyr::summarize(heaviest_penguin = max(body_mass_g, na.rm = T)) #max() does not know how to deal with NAs very well</code></pre>
+<pre><code># A tibble: 1 x 1
+  heaviest_penguin
+             &lt;int&gt;
+1             6300</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":7,"fig.height":5,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":672,"warning":true,"error":false,"message":true,"exercise.df_print":"default","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="summarize-extra-hint" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>penguins %&gt;%
+  dplyr::group_by(species) %&gt;%
+  dplyr::summarize(heaviest_penguin = max(body_mass_g, na.rm = T))</code></pre>
+</div>
+<p><strong>Activity</strong> <em>Can you get the weight of the lightest penguin of each species? You can use <code>min()</code>. What happens when in addition to species you also group by year <code>group_by(species, year)</code>?</em></p>
+</div>
+<div id="section-arrange" class="section level2">
+<h2><span class="header-section-number">0.9</span> <code>arrange()</code></h2>
+The <code>arrange()</code> verb is pretty self-explanatory. <code>arrange()</code> orders the rows of a data frame by the values of selected columns in ascending order. You can use the <code>desc()</code> argument inside to arrange in descending order. The following chunk arranges the data frame based on the length of the penguins' bill. You hint tab contains the code for the descending order alternative.
+<p>
+<center>
+<code>arrange(variable_of_interest)</code>
+</center>
+<br>
+<div class="tutorial-exercise" data-label="arrange-extra" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="3">
+<pre class="text"><code>penguins %&gt;%
+  dplyr::arrange(bill_length_mm)</code></pre>
+<pre><code># A tibble: 344 x 8
+   species island bill_length_mm bill_depth_mm flipper_length_… body_mass_g sex  
+   &lt;fct&gt;   &lt;fct&gt;           &lt;dbl&gt;         &lt;dbl&gt;            &lt;int&gt;       &lt;int&gt; &lt;fct&gt;
+ 1 Adelie  Dream            32.1          15.5              188        3050 fema…
+ 2 Adelie  Dream            33.1          16.1              178        2900 fema…
+ 3 Adelie  Torge…           33.5          19                190        3600 fema…
+ 4 Adelie  Dream            34            17.1              185        3400 fema…
+ 5 Adelie  Torge…           34.1          18.1              193        3475 &lt;NA&gt; 
+ 6 Adelie  Torge…           34.4          18.4              184        3325 fema…
+ 7 Adelie  Biscoe           34.5          18.1              187        2900 fema…
+ 8 Adelie  Torge…           34.6          21.1              198        4400 male 
+ 9 Adelie  Torge…           34.6          17.2              189        3200 fema…
+10 Adelie  Biscoe           35            17.9              190        3450 fema…
+# … with 334 more rows, and 1 more variable: year &lt;int&gt;</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":7,"fig.height":5,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":672,"warning":true,"error":false,"message":true,"exercise.df_print":"default","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="arrange-extra-hint" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>penguins %&gt;%
+  dplyr::arrange(desc(bill_length_mm))</code></pre>
+</div>
+<p><strong>Activity</strong> <em>Can you create a data frame arranged by body_mass_g of the penguins observed in the &quot;Dream&quot; island?</em></p>
+</div>
+<div id="section-quiz" class="section level2">
+<h2><span class="header-section-number">0.10</span> Quiz</h2>
+<div class="tutorial-exercise" data-label="quiz-extra" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="5">
+<pre class="text"><code>penguins</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":7,"fig.height":5,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":672,"warning":true,"error":false,"message":true,"exercise.df_print":"default","exercise.timelimit":10,"exercise.checker":"NULL"}</script>
+</div>
+<p>Here are some questions for you. Note that there are multiple ways to reach the same answer:</p>
+<p><div class="panel-heading tutorial-quiz-title">Quiz</div><div class="panel panel-default">
+<div data-label="quiz-1" class="tutorial-question panel-body">
+<div id="quiz-1-answer_container" class="shiny-html-output"></div>
+<div id="quiz-1-message_container" class="shiny-html-output"></div>
+<div id="quiz-1-action_button_container" class="shiny-html-output"></div>
+<script>if (Tutorial.triggerMathJax) Tutorial.triggerMathJax()</script>
+</div>
+</div><div class="panel panel-default">
+<div data-label="quiz-2" class="tutorial-question panel-body">
+<div id="quiz-2-answer_container" class="shiny-html-output"></div>
+<div id="quiz-2-message_container" class="shiny-html-output"></div>
+<div id="quiz-2-action_button_container" class="shiny-html-output"></div>
+<script>if (Tutorial.triggerMathJax) Tutorial.triggerMathJax()</script>
+</div>
+</div><div class="panel panel-default">
+<div data-label="quiz-3" class="tutorial-question panel-body">
+<div id="quiz-3-answer_container" class="shiny-html-output"></div>
+<div id="quiz-3-message_container" class="shiny-html-output"></div>
+<div id="quiz-3-action_button_container" class="shiny-html-output"></div>
+<script>if (Tutorial.triggerMathJax) Tutorial.triggerMathJax()</script>
+</div>
+</div><div class="panel panel-default">
+<div data-label="quiz-4" class="tutorial-question panel-body">
+<div id="quiz-4-answer_container" class="shiny-html-output"></div>
+<div id="quiz-4-message_container" class="shiny-html-output"></div>
+<div id="quiz-4-action_button_container" class="shiny-html-output"></div>
+<script>if (Tutorial.triggerMathJax) Tutorial.triggerMathJax()</script>
+</div>
+</div></p>
+
+
+<script type="application/shiny-prerendered" data-context="server-start">
+library(learnr)
+library(dplyr)
+library(palmerpenguins)
+library(magrittr)
+tutorial_options(exercise.timelimit = 10)
+knitr::opts_chunk$set(echo = FALSE)
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+learnr:::register_http_handlers(session, metadata = NULL)
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+session$onSessionEnded(function() {
+        learnr:::session_stop_event(session)
+      })
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-head-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-head-code-editor`)), session)
+output$`tutorial-exercise-head-output` <- renderUI({
+  `tutorial-exercise-head-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-names-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-names-code-editor`)), session)
+output$`tutorial-exercise-names-output` <- renderUI({
+  `tutorial-exercise-names-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-select-extra-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-select-extra-code-editor`)), session)
+output$`tutorial-exercise-select-extra-output` <- renderUI({
+  `tutorial-exercise-select-extra-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-filter-extra-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-filter-extra-code-editor`)), session)
+output$`tutorial-exercise-filter-extra-output` <- renderUI({
+  `tutorial-exercise-filter-extra-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-pipe-extra-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-pipe-extra-code-editor`)), session)
+output$`tutorial-exercise-pipe-extra-output` <- renderUI({
+  `tutorial-exercise-pipe-extra-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-mutate-extra-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-mutate-extra-code-editor`)), session)
+output$`tutorial-exercise-mutate-extra-output` <- renderUI({
+  `tutorial-exercise-mutate-extra-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-summarize-extra-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-summarize-extra-code-editor`)), session)
+output$`tutorial-exercise-summarize-extra-output` <- renderUI({
+  `tutorial-exercise-summarize-extra-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-arrange-extra-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-arrange-extra-code-editor`)), session)
+output$`tutorial-exercise-arrange-extra-output` <- renderUI({
+  `tutorial-exercise-arrange-extra-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-quiz-extra-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-quiz-extra-code-editor`)), session)
+output$`tutorial-exercise-quiz-extra-output` <- renderUI({
+  `tutorial-exercise-quiz-extra-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz-1", question = structure("Which verb allows you to index columns?", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_ed653b5",     option = "select()", value = "select()", label = structure("select()", html = TRUE, class = c("html",     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_ba5e9c2",     option = "filter()", value = "filter()", label = structure("filter()", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_953df15",     option = "summarize()", value = "summarize()", label = structure("summarize()", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_f4bdac7",     option = "group_by()", value = "group_by()", label = structure("group_by()", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("Incorrect", html = TRUE, class = c("html", "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quiz-1-answer", question = "quiz-1"), loading = structure("<strong>Loading:<\u002fstrong> \nWhich verb allows you to index columns?\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = FALSE, allow_retry = FALSE,     seed = 1829911540.14788, options = list()), class = c("learnr_radio", "tutorial_question")))
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz-2", question = structure("Which verb allows you to index rows?", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_4568a55",     option = "filter()", value = "filter()", label = structure("filter()", html = TRUE, class = c("html",     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_3c777f1",     option = "select()", value = "select()", label = structure("select()", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_7450395",     option = "summarize()", value = "summarize()", label = structure("summarize()", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_b77ad27",     option = "arrange()", value = "arrange()", label = structure("arrange()", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("Incorrect", html = TRUE, class = c("html", "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quiz-2-answer", question = "quiz-2"), loading = structure("<strong>Loading:<\u002fstrong> \nWhich verb allows you to index rows?\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = FALSE, allow_retry = FALSE,     seed = 287204008.86626, options = list()), class = c("learnr_radio", "tutorial_question")))
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz-3", question = structure("How long was the longest observed bill of a Gentoo penguin in 2008? (Use the console above)", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_e6bac05",     option = "55.2", value = "55.2", label = structure("55.2", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_36b0d33",     option = "53.4", value = "53.4", label = structure("53.4", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_fdf591d",     option = "51.5", value = "51.5", label = structure("51.5", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_7c9d10d",     option = "54.3", value = "54.3", label = structure("54.3", html = TRUE, class = c("html",     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("Incorrect", html = TRUE, class = c("html", "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quiz-3-answer", question = "quiz-3"), loading = structure("<strong>Loading:<\u002fstrong> \nHow long was the longest observed bill of a Gentoo penguin in 2008? (Use the console above)\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = FALSE, allow_retry = FALSE,     seed = 1427889055.83509, options = list()), class = c("learnr_radio", "tutorial_question")))
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz-4", question = structure("How long was the shortest observed bill of a Gentoo penguin in 2008? (Use the console above)", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_cfa327b",     option = "43.2", value = "43.2", label = structure("43.2", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_6f4de08",     option = "45.4", value = "45.4", label = structure("45.4", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_8904159",     option = "42.6", value = "42.6", label = structure("42.6", html = TRUE, class = c("html",     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_d7dfa0",     option = "45.3", value = "45.3", label = structure("45.3", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("Incorrect", html = TRUE, class = c("html", "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quiz-4-answer", question = "quiz-4"), loading = structure("<strong>Loading:<\u002fstrong> \nHow long was the shortest observed bill of a Gentoo penguin in 2008? (Use the console above)\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = FALSE, allow_retry = FALSE,     seed = 1603442785.25334, options = list()), class = c("learnr_radio", "tutorial_question")))
+</script>
+ <!--html_preserve-->
+<script type="application/shiny-prerendered" data-context="dependencies">
+{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["jquery"]},{"type":"character","attributes":{},"value":["2.2.3"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["resources/jquery"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquery.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["bookdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.21"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["gitbook"]},{"type":"character","attributes":{},"value":["2.6.7"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["resources/gitbook"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["js/app.min.js","js/lunr.js","js/clipboard.min.js","js/plugin-search.js","js/plugin-sharing.js","js/plugin-fontsettings.js","js/plugin-bookdown.js","js/jquery.highlight.js","js/plugin-clipboard.js"]},{"type":"character","attributes":{},"value":["css/style.css","css/plugin-table.css","css/plugin-bookdown.css","css/plugin-highlight.css","css/plugin-search.css","css/plugin-fontsettings.css","css/plugin-clipboard.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["bookdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.21"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["jquery"]},{"type":"character","attributes":{},"value":["1.11.3"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/jquery"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquery.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.6.6"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["font-awesome"]},{"type":"character","attributes":{},"value":["5.1.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/fontawesome"]}]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["css/all.css","css/v4-shims.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.6.6"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["bootbox"]},{"type":"character","attributes":{},"value":["4.4.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/bootbox"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["bootbox.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["idb-keyvalue"]},{"type":"character","attributes":{},"value":["3.2.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/idb-keyval"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["idb-keyval-iife-compat.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[false]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial.js"]},{"type":"character","attributes":{},"value":["tutorial.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-autocompletion"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-autocompletion.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-diagnostics"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-diagnostics.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]}]}
+</script>
+<!--/html_preserve-->
+<!--html_preserve-->
+<script type="application/shiny-prerendered" data-context="execution_dependencies">
+{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages","version"]},"class":{"type":"character","attributes":{},"value":["data.frame"]},"row.names":{"type":"integer","attributes":{},"value":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61]}},"value":[{"type":"character","attributes":{},"value":["assertthat","backports","base","blob","bookdown","bslib","checkmate","cli","compiler","crayon","datasets","DBI","digest","dplyr","ellipsis","evaluate","fansi","fastmap","generics","glue","graphics","grDevices","htmltools","htmlwidgets","httpuv","jquerylib","jsonlite","knitr","later","learnr","lifecycle","magrittr","markdown","methods","mime","palmerpenguins","pillar","pkgconfig","promises","purrr","R6","Rcpp","rlang","rmarkdown","rprojroot","rstudioapi","sass","shiny","stats","stringi","stringr","tibble","tidyselect","tools","utf8","utils","vctrs","withr","xfun","xtable","yaml"]},{"type":"character","attributes":{},"value":["0.2.1","1.2.1","3.6.3","1.2.1","0.21","0.2.4","2.0.0","2.2.0","3.6.3","1.3.4","3.6.3","1.1.0","0.6.27","1.0.3","0.3.1","0.14","0.4.2","1.1.0","0.1.0","1.4.2","3.6.3","3.6.3","0.5.1.1","1.5.3","1.5.5","0.1.3","1.7.2","1.30","1.1.0.1","0.10.1","0.2.0","2.0.1","1.1","3.6.3","0.9","0.1.0","1.4.7","2.0.3","1.1.1","0.3.4","2.5.0","1.0.6","0.4.10","2.6.6","2.0.2","0.13","0.3.1","1.6.0","3.6.3","1.5.3","1.4.0","3.0.6","1.1.0","3.6.3","1.1.4","3.6.3","0.3.6","2.4.1","0.20","1.8-4","2.2.1"]}]}]}
+</script>
+<!--/html_preserve-->
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>
