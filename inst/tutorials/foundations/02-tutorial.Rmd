@@ -1,5 +1,5 @@
 ---
-title: "Introduction to Data Manipulation"
+title: "Session 02 - Introduction to Data Manipulation"
 subtitle: "Getting our data right with `dplyr`"
 output: 
   learnr::tutorial:
