@@ -21,6 +21,7 @@ You can then run the tutorial of the session we are covering by running the resp
 hertiestats2::run_tutorial(name = "intro") #first session
 hertiestats2::run_tutorial(name = "foundations") #second session
 hertiestats2::run_tutorial(name = "dataviz") #third session
+hertiestats2::run_tutorial(name = "regression") #fourth session
 ```
 
 To explore the available tutorials, you can run:

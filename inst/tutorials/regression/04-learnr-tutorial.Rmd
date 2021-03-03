@@ -1,0 +1,638 @@
+---
+title: "Session 04 - Basics of Regression"
+subtitle: "Our first steps in statistical modeling in R"
+output: 
+  learnr::tutorial:
+    progressive: true
+    allow_skip: true
+runtime: shiny_prerendered
+description: >
+  Learn how to leverage R for statistical modeling, as well as DAGs for causal inference.
+---
+  
+```{r setup, include=FALSE}
+library(learnr)
+set.seed(42) #for consistent randomization
+library(wooldridge) # To get our example's dataset 
+library(ggplot2) # To visualize data (this package is also loaded by library(tidyverse))
+library(stargazer) # To format regression tables 
+library(tidyverse) # To use dplyr functions and the pipe operator when needed
+library(knitr) # To create tables with kable()
+library(magrittr)
+library(dplyr)
+library(readr)
+library(ggdag)
+
+data("wage1")
+
+animals_df <- tibble::tibble(
+  animal = rep(c("Dog", "Cat", "Rabbit", "Fish"), each = 250),
+  weight = rnorm(1000, 150, 50) + (rnorm(1000, 500, 150) * as.numeric(animal == "Rabbit")) + (rnorm(1000, 1600, 300) * as.numeric(animal == "Cat")) + (rnorm(1000, 3500, 800) * as.numeric(animal == "Dog")),
+  daily_sleep = rnorm(1000, 13, 1.5) - (1.5 * as.numeric(animal == "Rabbit")) - (3 * as.numeric(animal == "Cat")) - (5 * as.numeric(animal == "Dog")))
+
+
+tutorial_options(exercise.timelimit = 10)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+```{r, include=F}
+# beauty - 1000 observations with mean 5 units of beauty and sd 1.5 (arbitrary scale)
+beauty <- rnorm(1000, 5, 1.5)
+# talent - 1000 observations with mean 3 units of talent and sd 1 (arbitrary scale)
+talent <- rnorm(1000, 3, 1)
+# celebrity - binary
+celebrity_status <-  ifelse(beauty + talent > 8, "Celebrity" , "Not Celebrity") # celebrity if the sum of units  are greater than 8
+celebrity_df <- dplyr::tibble(beauty, talent, celebrity_status) # we make a df with our values
+# sex - replicate male and female 500 times each
+sex <- rep(c("Male", "Female"), each = 500) 
+# shoe size - random number with mean 38 and sd 4, plus 4 if the observation is male
+shoesize <- rnorm(1000, 38, 2) +  4 * as.numeric(sex == "Male") 
+# salary - a random number with mean 25 and sd 2, plus 5 if the observation is male
+salary <- rnorm(1000, 25, 2) + 5 * as.numeric(sex == "Male") 
+salary_df <- dplyr::tibble(sex, shoesize, salary)
+
+```
+
+## Welcome
+
+###  Introduction!
+
+Welcome to our fourth tutorial for the Statistics II: Statistical Modeling & Causal Inference (with R) course. 
+
+During this week's lecture you reviewed bivariate and multiple linear regressions. You also learned how Directed Acyclic Graphs (DAGs) can be leveraged to gather causal estimates. 
+
+In this lab session we will:
+
+* Use the `ggdag` and `dagitty` packages to assess your modeling strategy
+* Review how to run regression models using **R** 
+* Illustrate omitted variable and collider bias
+
+---
+
+## Working with DAGs in R
+
+Last week we learned about the general syntax of the `ggdag` package:
+
+- We created **dagified** objects with `ggdag::dagify()`
+- We plotted our DAGs with `ggdag::ggdag()`
+- We discussed how to specify the coordinates of our nodes with a coordinate list
+
+Today, we will learn how the `ggdag` and `dagitty` packages can help us illustrate our paths and adjustment sets to fulfill the **backdoor criterion**
+
+Let's take one of the DAGs from our review slides:
+
+```{r dag-create, fig.align="center", exercise=TRUE, exercise.lines = 15, message=F, warning=F}
+coord_dag <- list(
+  x = c(d = 0, p = 0, b = 1, a = 1 , c = 2, y = 2),
+  y = c(d = 0, p = 2, b = 1, a = -1, c = 2, y = 0)
+)
+
+our_dag <- ggdag::dagify(d ~ p + a, # p and a pointing at d
+                         b ~ p + c, # p and c pointing at b
+                         y ~ d + a + c, # d, a, and c pointing at y
+                         coords = coord_dag, # our coordinates from the list up there
+                         exposure = "d", # we declare out exposure variable
+                         outcome = "y") # we declare out outcome variable
+
+ggdag::ggdag(our_dag) + 
+  theme_dag() # equivalent to theme_void()
+```
+
+---
+
+
+```{r include=F}
+coord_dag <- list(
+  x = c(d = 0, p = 0, b = 1, a = 1 , c = 2, y = 2),
+  y = c(d = 0, p = 2, b = 1, a = -1, c = 2, y = 0)
+)
+
+our_dag <- ggdag::dagify(d ~ p + a, # p and a pointing at d
+                         b ~ p + c, # p and c pointing at b
+                         y ~ d + a + c, # d, a, and c pointing at y
+                         coords = coord_dag, # our coordinates from the list up there
+                         exposure = "d", # we declare out exposure variable
+                         outcome = "y") # we declare out outcome variable
+```
+
+### Learning about our paths and what adjustments we need
+
+As you have seen, when we **dagify** a DAG in **R** a *dagitty* object is created. These objects tell **R** that we are dealing with DAGs.
+
+This is very important because in addition to plotting them, **we can do analyses on the DAG objects**. A package that complements `ggdag` is the `dagitty` package.
+
+Today, we will focus on two functions from the `dagitty` package:
+
+- `dagitty::paths()`: Returns a list with two components: **paths**, which gives the actual paths, and **open**, which shows whether each path is open (d-connected) or closed (d-separated).
+- `dagitty::adjustmentSets()`: Lists the sets of covariates that would allow for unbiased estimation of causal effects, **assuming that the causal graph is correct**.
+
+We just need to input our DAG object.
+
+---
+
+#### Paths
+
+Let's see how the output of the `dagitty::paths` function looks like:
+
+```{r path, exercise=TRUE, exercise.lines = 4, message=F, warning=F}
+dagitty::paths(our_dag)
+```
+
+We see under `$paths` the three paths we declared during the manual exercise:
+
+- d -> y
+- d <- a -> y
+- d <- p -> b <- c -> y
+
+Additionally, `$open` tells us whether each path is open. In this case, we see that the second path is the only open non-causal path, so we would need to condition on **a** to close it.
+
+---
+
+We can also use `ggdag` to present the open paths visually with the `ggdag_paths()` function, as such:
+
+```{r path-plot, exercise=TRUE, exercise.lines = 4, message=F, warning=F}
+ggdag::ggdag_paths(our_dag) +
+  theme_dag()
+```
+
+---
+
+#### Covariate adjustment
+
+In addition to listing all the paths and sorting the backdoors manually, we can use the `dagitty::adjustmentSets()` function. 
+
+With this function, we just need to input our DAG object and it will return the different sets of adjustments.
+
+```{r adjust, exercise=TRUE, exercise.lines = 4, message=F, warning=F}
+dagitty::adjustmentSets(our_dag)
+```
+
+For example, in this DAG there is only one option. We need to control for **a**. 
+
+---
+
+We can also use `ggdag` to present the open paths visually with the `ggdag_adjustment_set()` function, as such:
+
+Also, do not forget to set the argument `shadow = TRUE`, so that the arrows from the adjusted nodes are included.
+
+```{r adjust-plot, exercise=TRUE, exercise.lines = 4, message=F, warning=F}
+ggdag::ggdag_adjustment_set(our_dag, shadow = T) +
+  theme_dag()
+```
+
+---
+
+<h4">If you want to learn more about DAGs in R</h4>
+
+- `ggdag` documentation: https://ggdag.malco.io/
+- `dagitty` vignette: https://cran.r-project.org/web/packages/dagitty/dagitty.pdf
+- What is `dagitty: https://cran.r-project.org/web/packages/dagitty/vignettes/dagitty4semusers.html
+
+**NOW LET'S MOVE TO REGRESSION**
+
+---
+
+## Introduction to Regression
+
+Linear regression is largely used to predict the value of an outcome variable based on one or more input explanatory variables. As we previously discussed, regression addresses a simple mechanical problem, namely, **what is our best guess of y given an observed x**.
+
+- Regression can be utilized without thinking about causes as a *predictive* or *summarizing* tool
+- It would not be appropiate to give causal interpretations to any $\beta$, unless we establish the fulfilment of centain assumptions
+
+---
+
+### Bivariate regression
+
+In bivariate regression, we are modeling a variable $y$ as a mathematical function of one variable $x$. We can generalize this in a mathematical equation as such:
+
+
+$$y = \beta_{0} + \beta{1}x + ϵ$$
+
+---
+
+### Multiple linear regression
+
+In multiple linear regression, we are modeling a variable $y$ as a mathematical function of multiple variables $(x, z, m)$. We can generalize this in a mathematical equation as such:
+
+
+$$y = \beta_{0} + \beta_{1}x + \beta_{2}z + \beta_{3}m + ϵ$$
+
+---
+
+
+## Exploratory questions
+
+Let's illustrate this with an example
+
+We will use the  `wage1` dataset from the `wooldridge` package. These are data from the 1976 Current Population Survey used by Jeffrey M. Wooldridge with pedagogical purposes in his book on Introductory Econometrics.
+
+If you want to check the contents of the `wage1` data frame, you can type `?wage1` in your console
+
+
+---
+
+### Visualizing
+
+<h4 style = "color:#800080;"> With regression we can answer **EXPLORATORY QUESTIONS**. For example: </h4>
+
+<h5> What is the relationship between education and respondents' salaries? </h5>
+
+We can start by exploring the relationship visually with our newly attained `ggplot2` skills:
+
+```{r plot-1, exercise=TRUE, exercise.lines = 8, message=F, warning=F}
+ggplot(wage1, aes(x = educ, y = wage)) +
+  geom_point(color = "grey60") +
+  geom_smooth(method = "lm", se = F, color = "#CC0055") +
+  theme_minimal() +
+  labs(x = "Years of education",
+       y = "Hourly wage (USD)") 
+```
+
+---
+
+### The `lm()` function
+
+This question can be formalized mathematically as:
+
+$$Hourly\ wage = \beta_0 + \beta_1Years\ of\ education + ϵ$$
+  
+Our interest here would be to build a model that predicts the hourly wage of a respondent (**our outcome variable**) using the years of education (**our explanatory variable**). Fortunately for us, **R** provides us with a very intuitive syntax to model regressions.
+
+**The general syntax for running a regression model in R is the following:**
+
+```r
+your_model_biv <- lm(outcome_variable ~ explanarory_variable, data = your_dataset) #for a bivariate regression
+your_model_mult <- lm(outcome_variable ~ explanarory_variable_1 + explanarory_variable_2, data = your_dataset) #for multiple regression
+```
+
+Now let's create our own model and save it into the `model_1` object, based on the bivariate regression we specified above in which `wage` is our outcome variable, `educ` is our explanatory variable, and our data come from the `wage1` object: 
+
+```{r first-regression, exercise=TRUE, exercise.lines = 10}
+
+```
+
+
+```{r first-regression-hint}
+model_1 <- lm(wage ~ educ, data = wage1)
+summary(model_1)
+broom::tidy(model_1)
+```
+
+---
+
+### `summary()` and `broom::tidy()`
+
+We have created an object that contains the coefficients, standard errors and further information from your model. In order to see the estimates, you could use the base R function `summary()`. **This function is very useful when you want to print your results in your console.**
+
+Alternatively, you can use the `tidy()` function from the `broom` package. The function constructs a data frame that summarizes the model’s statistical findings. You can see what else you can do with broom by running: vignette(“broom”). **The `broom::tidy()` function is useful when you want to store the values for future use (e.g., visualizing them)**
+
+Let's try both options in the console up there. You just need to copy this code below the `model_1` code.
+
+```r
+summary(model_1)
+broom::tidy(model_1)
+```
+
+---
+
+### Exercise
+
+$$Hourly\ wage = \beta_0 + \beta_1Years\ of\ education + ϵ$$
+
+<center>
+
+```{r, echo = F, results='asis', message = F, warning=F}
+model_1 <- lm(wage ~ educ, data = wage1)
+stargazer::stargazer(model_1, type="html",dep.var.labels = "Hourly wage", covariate.labels = "Years of education")
+```
+
+</center>
+
+<br>
+
+<p style = "color:#CC0055;"> How would you interpret the results of our `model_1`? </p>
+
++ What does the constant mean?
++ What does the `educ` coefficient mean?
++ Do these coefficient carry any causal meaning?
+
+---
+
+## Adding more nuance to our models
+
+As we have discussed in previous sessions we live in a very complex world. It is very likely that our exploration of the relationship between education and respondents' salaries is open to multiple sources of bias.
+
+Looking back at 1976 US, can you think of possible variables inside the mix?
+
+<p> How about the <span style ="color:#CC0055;">sex</span> or the <span style ="color:#800080;">ethnicity</span> of a worker?</p>
+
+---
+
+### Let's explore this visually
+
+<h5> What is the relationship between education and respondents' salaries <span style ="color:#CC0055;">conditional on the sex of the worker</span>? </h5>
+
+```{r plot-2, exercise=TRUE, exercise.lines = 8, message=F, warning=F}
+ggplot(wage1, aes(x = educ, y = wage, color = as.factor(female))) +
+  geom_point(alpha = 0.3) +
+  geom_smooth(method = "lm", se = F) +
+  theme_minimal() +
+  labs(x = "Years of education",
+       y = "Hourly wage (USD)",
+       color = "Female") +
+  theme(legend.position = "bottom")
+```
+
+**Check what happens when we replace the `color = as.factor(female)` for `color = female`**
+
++ What insights can we gather from this graph?
+
+---
+
+### Multiple linear regression
+
+This question can be formalized mathematically as:
+
+$$Hourly\ wage = \beta_0 + \beta_1Years\ of\ education + \beta_2Female + ϵ$$
+  
+Our interest here would be to build a model that predicts the hourly wage of a respondent (**our outcome variable**) using the years of education and their sex (**our explanatory variables**). 
+
+**Let's remember the syntax for running a regression model in R:**
+
+```r
+your_model_biv <- lm(outcome_variable ~ explanarory_variable, data = your_dataset) #for a bivariate regression
+your_model_mult <- lm(outcome_variable ~ explanarory_variable_1 + explanarory_variable_2, data = your_dataset) #for multiple regression
+```
+
+Now let's create our own model, save it into the `model_2` object, and print the results based on the formula regression we specified above in which `wage` is our outcome variable, `educ` and `female` are our explanatory variables, and our data come from the `wage1` object: 
+
+```{r second-regression, exercise=TRUE, exercise.lines = 7}
+
+```
+
+
+```{r second-regression-hint}
+model_2 <- lm(wage ~ educ + female, data = wage1)
+summary(model_2)
+```
+
+---
+
+### Exercise
+
+$$Hourly\ wage = \beta_0 + \beta_1Years\ of\ education + \beta_2Female + ϵ$$
+
+<center>
+
+```{r, echo = F, results='asis', message = F, warning=F}
+model_2 <- lm(wage ~ educ + female, data = wage1)
+stargazer::stargazer(model_2, type="html",dep.var.labels = "Hourly wage", covariate.labels = c("Years of education", "Female"), intercept.bottom = T)
+```
+
+</center>
+
+<br>
+
+<p style = "color:#CC0055;"> How would you interpret the results of our `model_2`? </p>
+
++ What does the constant mean?
++ What does the `educ` coefficient mean?
++ What does the `female` coefficient mean?
+
+---
+
+### Predicting from our models
+
+As we discussed previously, when we do not have our **causal inference** hats on, the main goal of linear regression is to predict an outcome value on the basis of one or multiple predictor variables. 
+
+**R** has a generic function `predict()` that helps us arrive at the predicted values on the basis of our explanatory variables.
+
+The syntax of `predict()` is the following:
+
+```r
+predict(name_of_the_model, newdata = data.frame(explanatory1 = value, explanatory2 = value))
+```
+
+>Say that based on our `model_2`, we are interested in the expected average hourly wage of a woman with 15 years of education.
+
+
+```{r predict-regression, exercise=TRUE, exercise.lines = 5}
+model_2 <- lm(wage ~ educ + female, data = wage1)
+predict(model_2, newdata = data.frame(educ = 15, female = 1))
+```
+
++ What does this result tell us?
++ What happens when you change `female` to 0? What does the result mean?
++ Can you think of a way to find the difference in the expected hourly wage between a male with 16 years of education and a female with 17?
+
+
+## Quiz
+
+```{r quiz-extra, exercise=TRUE, exercise.lines = 5}
+model_2 <- lm(wage ~ educ + female, data = wage1)
+```
+
+```{r quiz-extra-hint, exercise.lines = 5}
+model_2 <- lm(wage ~ educ + female, data = wage1)
+predict(model_2, newdata = data.frame(educ = 16, female = 0)) - predict(model_2, newdata = data.frame(educ = 15, female =0))
+```
+
+Here are some questions for you. Note that there are multiple ways to reach the same answer:
+
+```{r quiz}
+quiz(
+  question("What is the expected hourly wage of a male with 15 years of education?)",
+           answer("$8.22", correct = TRUE),
+           answer("$9.50"),
+           answer("$5.34"),
+           answer("$3")
+  ),
+  question("How much more on average does a male worker earn than a female counterpart?",
+           answer("$2.27", correct = T),
+           answer("In our data, males on average earn less than females"),
+           answer("$1.20"),
+           answer("$4.50")
+  ),
+  question("How much more is a worker expected to earn for every additional year of education, keeping sex constant?",
+           answer("$0.90"),
+           answer("$1.20"),
+           answer("$0.5", correct = T)
+  )
+)
+```
+
+---
+
+## DAGs and modeling
+
+```{r, echo = F, fig.align="center", out.width="80%"}
+knitr::include_graphics("https://user-images.githubusercontent.com/54796579/94547573-b8bd0780-024f-11eb-9565-03b1d1109c3b.png")
+```
+
+As we can remember from our slides, we were introduced to a set of **key** rules in understanding how to employ DAGs to guide our modeling strategy.
+
+- A path is open or unblocked at non-colliders (confounders or mediators)
+- A path is (naturally) blocked at colliders
+- An open path induces statistical association between two variables
+- Absence of an open path implies statistical independence
+- Two variables are d-connected if there is an open path between them
+- Two variables are d-separated if the path between them is blocked
+
+
+In this portion of the  tutorial we will demonstrate how different bias come to work when we model our relationships of interest. 
+
+---
+
+## What happens when we control for a collider?
+
+<h4 style = "color:#CC5500">The case for beauty, talent, and celebrity
+(What happens when we control for a collider?)</h4>
+
+
+```{r, echo = F, fig.align="center", out.width="80%"}
+knitr::include_graphics("https://user-images.githubusercontent.com/54796579/94370219-0706c500-00ef-11eb-814b-05ab715ee2e0.png")
+```
+
+As it is showcased from our DAG, we assume that earning celebrity status is a function of an individuals beauty and talent. **We will simulate data that reflects this assumptions**. In our world, someone gains celebrity status if the sum of units of beauty and celebrity are greater than 8.
+
+```{r collider, exercise=TRUE, exercise.lines = 15}
+# beauty - 1000 observations with mean 5 units of beauty and sd 1.5 (arbitrary scale)
+beauty <- rnorm(1000, 5, 1.5)
+
+# talent - 1000 observations with mean 3 units of talent and sd 1 (arbitrary scale)
+talent <- rnorm(1000, 3, 1)
+
+# celebrity - binary
+celebrity_status <-  ifelse(beauty + talent > 8, "Celebrity" , "Not Celebrity") # celebrity if the sum of units  are greater than 8
+
+celebrity_df <- dplyr::tibble(beauty, talent, celebrity_status) # we make a df with our values
+
+head(celebrity_df, 10)
+```
+
+---
+
+In this case, as our simulation suggest, we have a **collider structure**. We can see that celebrity can be a function of beauty or talent. Also, we can infer from the way we defined the variables that **beauty and talent are d-separated (ie. the path between them is closed because celebrity is a collider)**. 
+
+Say you are interested in researching the relationship between **beauty** and **talent** for your Master's thesis, while doing your literature review you encounter a series of papers that find a negative relationship between the two and state that more beautiful people tend to be less talented. The model that these teams of the researchers used was the following:
+
+$$Y_{Talent} = \beta_0 + \beta_1Beauty + \beta_2Celebrity$$
+
+Your scientific hunch makes you believe that celebrity is a collider and that by controlling for it in their models, the researchers are inducing **collider bias**, or **endogenous bias**. You decide to move forward with your thesis by laying out a criticism to previous work on the field, given that you consider the formalization of their models is erroneous. You utilize the same data previous papers used, but based on your logic, you do not control for celebrity status. This is what you find:
+
+### True model
+
+```{r collider-true, exercise=TRUE, exercise.lines = 3}
+true_model_celebrity <- lm(talent ~ beauty, data = celebrity_df)
+summary(true_model_celebrity)
+```
+
+```{r collider-plot, exercise=TRUE, exercise.lines = 8, fig.align="center", message=F}
+ggplot(celebrity_df, aes(x=beauty, 
+                         y=talent)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = F) +
+  theme_minimal() +
+  theme(legend.position = "bottom") +
+  labs(x = "Beauty",
+       y = "Talent")
+```
+
+### Biased model from previous literature
+
+Let's see:
+
+```{r collider-bias, exercise=TRUE, exercise.lines = 3}
+biased_model_celibrity <- lm(talent ~ beauty + celebrity_status, data = celebrity_df)
+summary(biased_model_celibrity)
+```
+
+
+```{r collider-plot-bias, exercise=TRUE, exercise.lines = 8 ,fig.align="center", message=F}
+ggplot(celebrity_df, aes(x=beauty, y=talent, color = celebrity_status)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = F) +
+  theme_minimal() +
+  theme(legend.position = "bottom") +
+  labs(x = "Beauty",
+       y = "Talent",
+       color = "")
+```
+
+>As we can see, by controlling for a collider, the previous literature was inducing to a non-existent association between beauty and talent, also known as **collider** or **endogenous bias**.
+
+---
+
+## What happens when we fail to control for a confounder?
+
+<h4 style = "color:#32CD32;">Shoe size and salary 
+(What happens when we fail to control for a confounder?)</h4>
+
+```{r, echo = F, fig.align="center", out.width="80%"}
+knitr::include_graphics("https://user-images.githubusercontent.com/54796579/94558922-cd55cb80-0260-11eb-9b03-ff54416014a7.png")
+```
+
+```{r confounder, exercise=TRUE, exercise.lines = 15}
+# sex - replicate male and female 500 times each
+sex <- rep(c("Male", "Female"), each = 500) 
+
+# shoe size - random number with mean 38 and sd 4, plus 4 if the observation is male
+shoesize <- rnorm(1000, 38, 2) +  (4 * as.numeric(sex == "Male"))
+
+# salary - a random number with mean 25 and sd 2, plus 5 if the observation is male
+salary <- rnorm(1000, 25, 2) + (5 * as.numeric(sex == "Male"))
+
+salary_df <- dplyr::tibble(sex, shoesize, salary)
+
+head(salary_df, 10)
+```
+
+Say now one of your peers tells you about this new study that suggests that **shoe size** has an effect on an individuals' **salary**. You are a bit skeptic and read it. The model that these researchers apply is the following:
+
+$$Y_{Salary} = \beta_0 + \beta_1ShoeSize$$
+
+Your scientific hunch makes you believe that this relationship could be confounded by the **sex** of the respondent. You think that by failing to control for sex in their models, the researchers are inducing **omitted variable bias**. You decide to open their replication files and control for sex. This is what you find:
+
+$$Y_{Salary} = \beta_0 + \beta_1ShoeSize + \beta_2Sex$$
+
+---
+
+### True model
+
+```{r confounder-true, exercise=TRUE, exercise.lines = 3}
+true_model_salary <- lm(salary ~ shoesize + sex, data = salary_df)
+summary(true_model_salary)
+```
+
+```{r confounder-plot, exercise=TRUE, exercise.lines = 8, fig.align="center", message=F}
+ggplot(salary_df, aes(x=shoesize, y=salary, color = sex)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = F) +
+  theme_minimal() +
+  theme(legend.position = "bottom") +
+  labs(x = "Shoe size",
+       y = "Salary",
+       color = "")
+```
+
+---
+
+#### Biased model from previous literature
+
+```{r confounder-biased, exercise=TRUE, exercise.lines = 3}
+biased_model_salary <- lm(salary ~ shoesize, data = salary_df)
+summary(biased_model_salary)
+```
+
+
+```{r confounder-biased-plot, exercise=TRUE, exercise.lines = 3}
+ggplot(salary_df, aes(x=shoesize, y=salary)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = F) +
+  theme_minimal() +
+  labs(x = "Shoe size",
+       y = "Salary")
+```
+
+>As we can see, by failing to control for a confounder, the previous literature was creating a non-existent association between shoe size and salary, incurring in **ommited variable bias**.
